@@ -1,13 +1,13 @@
-interface SidebarMenuProps {
+interface NavItemProps {
   icon: React.ReactNode;
   text: string;
   isActive?: boolean;
 }
 
-const SidebarMenu = ({ icon, text, isActive }: SidebarMenuProps) => {
+const NavItem = ({ icon, text, isActive }: NavItemProps) => {
   return (
-    <div
-      className={`flex h-11 w-full items-center gap-2 rounded-lg pl-6 hover:cursor-pointer ${isActive ? "bg-primary/20" : "bg-transparent"}`}
+    <li
+      className={`flex h-11 w-full items-center gap-2 rounded-lg pl-6 hover:cursor-pointer ${isActive ? "bg-primary/50" : "bg-transparent"}`}
     >
       <span
         className={`${isActive ? "text-primary" : "text-muted-foreground"}`}
@@ -17,8 +17,8 @@ const SidebarMenu = ({ icon, text, isActive }: SidebarMenuProps) => {
       <p className={`${isActive ? "text-primary" : "text-muted-foreground"}`}>
         {text}
       </p>
-    </div>
+    </li>
   );
 };
 
-export default SidebarMenu;
+export default NavItem;

@@ -4,7 +4,12 @@
   --background: oklch(92.8% 0.006 264.531);
   --foreground: oklch(25% 0.02 264.531);
   --card-background: oklch(98.4% 0.003 247.858);
+
   --primary: oklch(62.7% 0.265 303.9);
+
+  --table-header-bg: oklch(97.37% 0.014 254.11);
+  --out-of-stock-bg: oklch(55.55% 0.045 257.41 / 0.1);
+
   --font-inter: "Inter", sans-serif;
 }
 
@@ -13,10 +18,23 @@
   --color-foreground: var(--foreground);
   --color-card-background: var(--card-background);
   --color-primary: var(--primary);
+
+  --color-table-header: var(--table-header-bg);
+  --color-out-of-stock: var(--out-of-stock-bg);
+
   --font-sans: var(--font-inter);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-inter);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  table {
+    border-color: var(--foreground);
+  }
 }

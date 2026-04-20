@@ -25,7 +25,7 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${inter.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full gap-8 font-sans">
+      <body className="flex min-h-full font-sans">
         <Sidebar />
         {children}
       </body>

@@ -1,6 +1,6 @@
 const Sales = () => {
   return (
-    <main className="mt-8">
+    <main className="mt-8 w-full px-8">
       <h1>Vendas</h1>
     </main>
   );

@@ -1,15 +1,13 @@
 import { Plus } from "lucide-react";
 
 import { Button } from "@/components/button";
-import { db } from "@/lib/prisma";
+import { getProducts } from "@/data-access/product/get-products";
 
 import { DataTable } from "./_components/data-table";
 import { productColumns } from "./_components/table-columns";
 
 const Products = async () => {
-  const products = await db.product.findMany();
-  console.log(products);
-
+  const products = await getProducts();
   return (
     <main className="mt-8 w-full px-8">
       <span className="text-primary text-2xl text-[15px] font-semibold">

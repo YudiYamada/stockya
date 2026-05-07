@@ -6,9 +6,15 @@
   --card-background: oklch(98.4% 0.003 247.858);
 
   --primary: oklch(62.7% 0.265 303.9);
+  --secondary: oklch(45% 0.04 264.531);
+  --destructive: oklch(60% 0.2 25.9);
 
   --table-header-bg: oklch(97.37% 0.014 254.11);
   --out-of-stock-bg: oklch(55.55% 0.045 257.41 / 0.1);
+
+  --border: oklch(25% 0.02 264.531 / 0.1);
+  --overlay: oklch(0% 0 0 / 0.4);
+  --muted-foreground: oklch(25% 0.02 264.531 / 0.7);
 
   --font-inter: "Inter", sans-serif;
 }
@@ -18,9 +24,15 @@
   --color-foreground: var(--foreground);
   --color-card-background: var(--card-background);
   --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-destructive: var(--destructive);
 
   --color-table-header: var(--table-header-bg);
   --color-out-of-stock: var(--out-of-stock-bg);
+
+  --color-border: var(--border);
+  --color-overlay: var(--overlay);
+  --color-muted-foreground: var(--muted-foreground);
 
   --font-sans: var(--font-inter);
 }

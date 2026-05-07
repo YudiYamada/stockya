@@ -3,10 +3,15 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const variants = {
-  primary: "bg-primary text-white shadow hover:bg-primary/50",
-  destructive: "",
-  outline: "",
-  ghost: "hover:bg-gray-100 text-gray-700",
+  primary: "bg-primary text-white shadow hover:opacity-90 transition-opacity",
+  secondary:
+    "bg-secondary text-white shadow hover:opacity-90 transition-opacity",
+  destructive:
+    "bg-destructive text-white shadow-sm hover:opacity-90 transition-opacity",
+  outline:
+    "border border-border bg-transparent hover:bg-foreground/5 text-foreground transition-colors",
+  ghost:
+    "hover:bg-foreground/5 text-muted-foreground hover:text-foreground transition-colors",
 };
 
 const sizes = {

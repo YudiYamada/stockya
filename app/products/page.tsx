@@ -1,8 +1,6 @@
-import { Plus } from "lucide-react";
-
-import { Button } from "@/components/button";
 import { getProducts } from "@/data-access/product/get-products";
 
+import AddProductButton from "./_components/add-product-button";
 import { DataTable } from "./_components/data-table";
 import { productColumns } from "./_components/table-columns";
 
@@ -15,9 +13,7 @@ const Products = async () => {
       </span>
       <div className="flex min-w-full justify-between">
         <h2 className="text-xl font-semibold">Gestão de Produtos</h2>
-        <Button className="gap-2">
-          <Plus size={16} /> Novo Produto
-        </Button>
+        <AddProductButton />
       </div>
       <DataTable data={products} columns={productColumns} className="mt-5" />
     </main>

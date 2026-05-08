@@ -1,6 +1,6 @@
 import { getProducts } from "@/data-access/product/get-products";
 
-import AddProductButton from "./_components/add-product-button";
+import CreateProductButton from "./_components/create-product-button";
 import { DataTable } from "./_components/data-table";
 import { productColumns } from "./_components/table-columns";
 
@@ -13,7 +13,7 @@ const Products = async () => {
       </span>
       <div className="flex min-w-full justify-between">
         <h2 className="text-xl font-semibold">Gestão de Produtos</h2>
-        <AddProductButton />
+        <CreateProductButton />
       </div>
       <DataTable data={products} columns={productColumns} className="mt-5" />
     </main>

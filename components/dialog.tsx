@@ -4,13 +4,14 @@ import { Slot } from "@radix-ui/react-slot";
 import React, {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useState,
 } from "react";
 import { createPortal } from "react-dom";
 
-import { cn } from "@/lib/utils"; // Ajuste o path conforme sua estrutura
+import { cn } from "@/lib/utils";
 
 const DialogContext = createContext<{
   open: boolean;
@@ -30,8 +31,30 @@ interface DialogElementProps {
   className?: string;
 }
 
-export function Dialog({ children }: { children: ReactNode }) {
-  const [open, setOpen] = useState(false);
+interface DialogProps {
+  children: ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export function Dialog({
+  children,
+  open: externalOpen,
+  onOpenChange,
+}: DialogProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+
+  const open = externalOpen !== undefined ? externalOpen : internalOpen;
+  const setOpen = useCallback(
+    (newOpen: boolean) => {
+      if (onOpenChange) {
+        onOpenChange(newOpen);
+      } else {
+        setInternalOpen(newOpen);
+      }
+    },
+    [onOpenChange],
+  );
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -45,7 +68,7 @@ export function Dialog({ children }: { children: ReactNode }) {
       document.body.style.overflow = "unset";
       window.removeEventListener("keydown", handleEsc);
     };
-  }, [open]);
+  }, [open, setOpen]);
 
   return (
     <DialogContext.Provider value={{ open, setOpen }}>
@@ -167,16 +190,7 @@ export function DialogFooter({
   children: ReactNode;
   className?: string;
 }) {
-  return (
-    <div
-      className={cn(
-        "mt-6",
-        className,
-      )}
-    >
-      {children}
-    </div>
-  );
+  return <div className={cn("mt-6", className)}>{children}</div>;
 }
 
 export function DialogClose({

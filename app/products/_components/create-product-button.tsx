@@ -1,11 +1,16 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus } from "lucide-react";
+import { Loader2Icon, Plus } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
-import * as z from "zod";
 
+import { createProduct } from "@/actions/product/create-product";
+import {
+  CreateProductSchema,
+  createProductSchema,
+} from "@/actions/product/create-product/schema";
 import { Button } from "@/components/button";
 import {
   Dialog,
@@ -27,21 +32,11 @@ import {
 } from "@/components/form";
 import { Input } from "@/components/input";
 
-const formSchema = z.object({
-  name: z.string().trim().min(1, "O nome do produto é obrigatório"),
-  price: z.number().positive("O preço deve ser um número positivo"),
-  stock: z
-    .number()
-    .int()
-    .min(0, "A quantidade em estoque deve ser um número inteiro não negativo"),
-});
-
-type FormSchema = z.infer<typeof formSchema>;
-
-const AddProductButton = () => {
-  const form = useForm<FormSchema>({
+const CreateProductButton = () => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const form = useForm<CreateProductSchema>({
     shouldUnregister: true,
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(createProductSchema),
     defaultValues: {
       name: "",
       price: 0,
@@ -49,12 +44,17 @@ const AddProductButton = () => {
     },
   });
 
-  const onSubmit = (data: FormSchema) => {
-    console.log("Novo Produto:", data);
+  const onSubmit = async (data: CreateProductSchema) => {
+    try {
+      await createProduct(data);
+      setDialogOpen(false);
+    } catch (error) {
+      console.error("Erro ao criar produto:", error);
+    }
   };
 
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
@@ -140,9 +140,13 @@ const AddProductButton = () => {
               </DialogClose>
               <Button
                 type="submit"
-                onClick={() => form.handleSubmit(onSubmit)()}
+                disabled={form.formState.isSubmitting}
+                className="gap-1.5"
               >
-                Adicionar Produto
+                {form.formState.isSubmitting && (
+                  <Loader2Icon className="animate-spin" size={18} />
+                )}
+                Salvar
               </Button>
             </DialogFooter>
           </form>
@@ -152,4 +156,4 @@ const AddProductButton = () => {
   );
 };
 
-export default AddProductButton;
+export default CreateProductButton;

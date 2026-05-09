@@ -15,7 +15,11 @@ const Products = async () => {
         <h2 className="text-xl font-semibold">Gestão de Produtos</h2>
         <CreateProductButton />
       </div>
-      <DataTable data={products} columns={productColumns} className="mt-5" />
+      <DataTable
+        data={products}
+        columns={productColumns}
+        className="mt-5 mb-5"
+      />
     </main>
   );
 };

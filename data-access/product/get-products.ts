@@ -13,6 +13,6 @@ export const cachedGetProducts = unstable_cache(
   getProducts,
   ["get-products"],
   {
-    revalidate: 5, // Revalidate every 5 seconds
+    revalidate: 60, // Revalidate every 60 seconds
   }
 )

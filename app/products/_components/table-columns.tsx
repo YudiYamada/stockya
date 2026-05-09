@@ -1,7 +1,14 @@
-import { Ellipsis } from "lucide-react";
+"use client";
+
+import { ClipboardCopy, Ellipsis, SquarePen, Trash2 } from "lucide-react";
 
 import { ProductModel } from "@/app/generated/prisma/models/Product";
-import { Button } from "@/components/button";
+import {
+  Dropdown,
+  DropdownContent,
+  DropdownItem,
+  DropdownTrigger,
+} from "@/components/drop-down-menu";
 import { cn } from "@/lib/utils";
 
 interface Column<T> {
@@ -44,12 +51,26 @@ export const productColumns: Column<ProductModel>[] = [
   },
   {
     header: "Ações",
-    accessor: () => (
-      <div>
-        <Button variant="ghost" size="icon" className="h-8 w-8">
+    accessor: (product: ProductModel) => (
+      <Dropdown>
+        <DropdownTrigger>
           <Ellipsis size={20} />
-        </Button>
-      </div>
+        </DropdownTrigger>
+        <DropdownContent>
+          <DropdownItem
+            onClick={() => navigator.clipboard.writeText(product.id)}
+          >
+            <ClipboardCopy /> Copiar ID
+          </DropdownItem>
+          <DropdownItem>
+            <SquarePen />
+            Editar
+          </DropdownItem>
+          <DropdownItem>
+            <Trash2 /> Excluir
+          </DropdownItem>
+        </DropdownContent>
+      </Dropdown>
     ),
   },
 ];

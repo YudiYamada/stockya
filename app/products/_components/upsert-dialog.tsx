@@ -5,11 +5,11 @@ import { Loader2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
-import { createProduct } from "@/actions/product/create-product";
+import { upsertProduct } from "@/actions/product/upsert-product";
 import {
-  CreateProductSchema,
-  createProductSchema,
-} from "@/actions/product/create-product/schema";
+  UpsertProductSchema,
+  upsertProductSchema,
+} from "@/actions/product/upsert-product/schema";
 import { Button } from "@/components/button";
 import {
   DialogClose,
@@ -31,28 +31,42 @@ import { Input } from "@/components/input";
 import { toast } from "@/lib/toast-store";
 
 interface UpsertProductDialogContentProps {
+  defaultValues?: UpsertProductSchema;
   onSuccess?: () => void;
 }
 
-const UpsertProductDialogContent = ({ onSuccess }: UpsertProductDialogContentProps) => {
-  const form = useForm<CreateProductSchema>({
+const UpsertProductDialogContent = ({
+  defaultValues,
+  onSuccess,
+}: UpsertProductDialogContentProps) => {
+  const form = useForm<UpsertProductSchema>({
     shouldUnregister: true,
-    resolver: zodResolver(createProductSchema),
-    defaultValues: {
+    resolver: zodResolver(upsertProductSchema),
+    defaultValues: defaultValues ?? {
       name: "",
       price: 0,
       stock: 1,
     },
   });
 
-  const onSubmit = async (data: CreateProductSchema) => {
+  const isEditing = !!defaultValues;
+
+  const onSubmit = async (data: UpsertProductSchema) => {
     try {
-      await createProduct(data);
-      toast.success("Produto criado", "O produto foi adicionado ao estoque com sucesso.");
+      await upsertProduct({ ...data, id: defaultValues?.id });
+      if (isEditing) {
+        toast.success("Produto atualizado com sucesso.");
+      } else {
+        toast.success("Produto adicionado com sucesso.");
+      }
       onSuccess?.();
     } catch (error) {
-      console.error("Erro ao criar produto:", error);
-      toast.error("Ocorreu um erro ao criar o produto.", "Tente novamente.");
+      console.error("Erro ao salvar produto:", error);
+      if (isEditing) {
+        toast.error("Erro ao atualizar produto. Tente novamente.");
+      } else {
+        toast.error("Erro ao adicionar produto. Tente novamente.");
+      }
     }
   };
 
@@ -61,7 +75,9 @@ const UpsertProductDialogContent = ({ onSuccess }: UpsertProductDialogContentPro
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <DialogHeader>
-            <DialogTitle>Adicionar Novo Produto</DialogTitle>
+            <DialogTitle>
+              {isEditing ? "Editar" : "Adicionar"} Produto
+            </DialogTitle>
             <DialogDescription>
               Preencha os detalhes do produto para adicioná-lo ao estoque.
             </DialogDescription>

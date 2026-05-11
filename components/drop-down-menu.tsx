@@ -80,6 +80,7 @@ interface DropdownContentProps {
   isOpen?: boolean;
   align?: "left" | "right";
   className?: string;
+  setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function DropdownContent({
@@ -87,6 +88,7 @@ export function DropdownContent({
   isOpen,
   align = "right",
   className,
+  setIsOpen,
 }: DropdownContentProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<"top" | "bottom">("bottom");
@@ -110,6 +112,16 @@ export function DropdownContent({
 
   if (!isOpen) return null;
 
+  const childrenWithProps = React.Children.map(children, (child) => {
+    if (React.isValidElement(child) && child.type === DropdownItem) {
+      return React.cloneElement(
+        child as React.ReactElement<DropdownItemProps>,
+        { setIsOpen },
+      );
+    }
+    return child;
+  });
+
   return (
     <div
       ref={contentRef}
@@ -121,7 +133,7 @@ export function DropdownContent({
         className,
       )}
     >
-      {children}
+      {childrenWithProps}
     </div>
   );
 }
@@ -132,6 +144,7 @@ interface DropdownItemProps {
   variant?: "default" | "destructive";
   className?: string;
   disabled?: boolean;
+  setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function DropdownItem({
@@ -140,10 +153,16 @@ export function DropdownItem({
   variant = "default",
   className,
   disabled,
+  setIsOpen,
 }: DropdownItemProps) {
+  const handleClick = () => {
+    if (onClick) onClick();
+    if (setIsOpen) setIsOpen(false);
+  };
+
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
       disabled={disabled}
       className={cn(
         "group relative flex w-full cursor-pointer items-center gap-2 rounded-sm px-3 py-2 text-sm transition-colors outline-none select-none disabled:pointer-events-none disabled:opacity-50",

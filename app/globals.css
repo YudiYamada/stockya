@@ -50,3 +50,26 @@
     border-color: var(--foreground);
   }
 }
+
+@layer utilities {
+  .animate-in {
+    animation-duration: 300ms;
+    animation-timing-function: cubic-bezier(0.21, 1.02, 0.73, 1);
+    fill-mode: forwards;
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  .slide-in-from-right-full {
+    animation-name: slideInRight;
+  }
+}

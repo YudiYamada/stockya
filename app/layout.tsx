@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 import Sidebar from "@/components/sidebar";
+import { Toaster } from "@/components/toaster";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -21,13 +22,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="pt-BR"
-      className={`${inter.variable} h-full antialiased`}
-    >
+    <html lang="pt-BR" className={`${inter.variable} h-full antialiased`}>
       <body className="flex min-h-full font-sans">
         <Sidebar />
         {children}
+        <Toaster />
       </body>
     </html>
   );

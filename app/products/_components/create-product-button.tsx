@@ -31,6 +31,7 @@ import {
   FormMessage,
 } from "@/components/form";
 import { Input } from "@/components/input";
+import { toast } from "@/lib/toast-store";
 
 const CreateProductButton = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -48,8 +49,10 @@ const CreateProductButton = () => {
     try {
       await createProduct(data);
       setDialogOpen(false);
+      toast.success("Produto criado com sucesso!");
     } catch (error) {
       console.error("Erro ao criar produto:", error);
+      toast.error("Ocorreu um erro ao criar o produto. Tente novamente.");
     }
   };
 

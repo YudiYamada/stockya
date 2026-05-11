@@ -2,7 +2,7 @@
 
 import { ClipboardCopy, Ellipsis, SquarePen, Trash2 } from "lucide-react";
 
-import { ProductModel } from "@/app/generated/prisma/models/Product";
+import { AlertDialog, AlertDialogTrigger } from "@/components/alert-dialog";
 import {
   Dropdown,
   DropdownContent,
@@ -11,24 +11,21 @@ import {
 } from "@/components/drop-down-menu";
 import { cn } from "@/lib/utils";
 
-interface Column<T> {
-  header: string;
-  accessor: keyof T | ((item: T) => React.ReactNode);
-  className?: string;
-}
+import { Column, PlainProduct } from "./data-table";
+import DeleteDialogContent from "./delete-dialog-content";
 
-export const productColumns: Column<ProductModel>[] = [
+export const productColumns: Column[] = [
   {
     header: "Produto",
     accessor: "name",
   },
   {
     header: "Valor unitário",
-    accessor: (product: ProductModel) =>
+    accessor: (product: PlainProduct) =>
       Intl.NumberFormat("pt-BR", {
         style: "currency",
         currency: "BRL",
-      }).format(Number(product.price)),
+      }).format(product.price),
   },
   {
     header: "Estoque",
@@ -36,7 +33,7 @@ export const productColumns: Column<ProductModel>[] = [
   },
   {
     header: "Status",
-    accessor: (product: ProductModel) => (
+    accessor: (product: PlainProduct) => (
       <span
         className={cn(
           "rounded-full px-2 py-1 text-xs font-medium",
@@ -51,24 +48,33 @@ export const productColumns: Column<ProductModel>[] = [
   },
   {
     header: "Ações",
-    accessor: (product: ProductModel) => (
+    accessor: (product: PlainProduct) => (
       <Dropdown>
         <DropdownTrigger>
-          <Ellipsis size={20} />
+          <div className="hover:bg-foreground/5 cursor-pointer rounded-full p-2 transition-colors">
+            <Ellipsis size={20} />
+          </div>
         </DropdownTrigger>
+
         <DropdownContent>
           <DropdownItem
             onClick={() => navigator.clipboard.writeText(product.id)}
           >
-            <ClipboardCopy /> Copiar ID
+            <ClipboardCopy size={18} /> Copiar ID
           </DropdownItem>
+
           <DropdownItem>
-            <SquarePen />
-            Editar
+            <SquarePen size={18} /> Editar
           </DropdownItem>
-          <DropdownItem>
-            <Trash2 /> Excluir
-          </DropdownItem>
+
+          <AlertDialog>
+            <AlertDialogTrigger className="w-full">
+              <DropdownItem>
+                <Trash2 size={18} /> Excluir
+              </DropdownItem>
+            </AlertDialogTrigger>
+            <DeleteDialogContent productId={product.id} />
+          </AlertDialog>
         </DropdownContent>
       </Dropdown>
     ),

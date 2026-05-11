@@ -1,26 +1,35 @@
-"use client"
+"use client";
 
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-interface Column<T> {
+export interface PlainProduct {
+  id: string;
+  name: string;
+  price: number;
+  stock: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Column {
   header: string;
-  accessor: keyof T | ((item: T) => React.ReactNode);
+  accessor: keyof PlainProduct | ((item: PlainProduct) => React.ReactNode);
   className?: string;
 }
 
-interface DataTableProps<T> {
-  columns: Column<T>[];
-  data: T[];
+interface DataTableProps {
+  columns: Column[];
+  data: PlainProduct[];
   className?: string;
 }
 
-export function DataTable<T>({ columns, data, className }: DataTableProps<T>) {
+export function DataTable({ columns, data, className }: DataTableProps) {
   return (
     <div
       className={cn(
-        "w-full overflow-hidden rounded-md border border-gray-200",
+        "w-full overflow-visible rounded-md border border-gray-200",
         className,
       )}
     >

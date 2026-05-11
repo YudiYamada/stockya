@@ -1,6 +1,12 @@
 "use client";
 
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import React, {
+  ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -82,14 +88,36 @@ export function DropdownContent({
   align = "right",
   className,
 }: DropdownContentProps) {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState<"top" | "bottom">("bottom");
+
+  useLayoutEffect(() => {
+    if (isOpen && contentRef.current) {
+      const contentRect = contentRef.current.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const spaceBelow = viewportHeight - contentRect.bottom;
+      const spaceAbove = contentRect.top;
+
+      // Se não há espaço suficiente abaixo (considerando um mínimo de 100px) e há mais espaço acima
+      if (spaceBelow < 100 && spaceAbove > spaceBelow) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setPosition("top");
+      } else {
+        setPosition("bottom");
+      }
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
     <div
+      ref={contentRef}
       className={cn(
-        "border-border bg-card-background absolute z-50 mt-2 min-w-48 overflow-hidden rounded-md border p-1 shadow-lg",
+        "border-border bg-card-background absolute z-100 min-w-48 overflow-hidden rounded-md border p-1 shadow-lg",
         "animate-in fade-in zoom-in-95 duration-100",
         align === "right" ? "right-0" : "left-0",
+        position === "bottom" ? "top-full mt-2" : "bottom-full mb-2",
         className,
       )}
     >

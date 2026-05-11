@@ -6,6 +6,14 @@ import { productColumns } from "./_components/table-columns";
 
 const Products = async () => {
   const products = await cachedGetProducts();
+  const plainProducts = products.map((p) => ({
+    id: p.id,
+    name: p.name,
+    price: Number(p.price),
+    stock: p.stock,
+    createdAt: p.createdAt,
+    updatedAt: p.updatedAt,
+  }));
   return (
     <main className="mt-8 w-full px-8">
       <span className="text-primary text-2xl text-[15px] font-semibold">
@@ -16,7 +24,7 @@ const Products = async () => {
         <CreateProductButton />
       </div>
       <DataTable
-        data={products}
+        data={plainProducts}
         columns={productColumns}
         className="mt-5 mb-5"
       />

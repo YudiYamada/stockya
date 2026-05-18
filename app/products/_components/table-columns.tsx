@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/helpers/currency";
 
 import { Column, PlainProduct } from "./data-table";
 import TableDropdownMenu from "./table-dropdown-menu";
@@ -16,11 +17,7 @@ export const productColumns: Column[] = [
   },
   {
     header: "Valor unitário",
-    accessor: (product: PlainProduct) =>
-      Intl.NumberFormat("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-      }).format(product.price),
+    accessor: (product: PlainProduct) => formatCurrency(product.price),
   },
   {
     header: "Estoque",

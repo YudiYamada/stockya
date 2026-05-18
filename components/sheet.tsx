@@ -98,7 +98,7 @@ export function SheetContent({
       {/* Painel Lateral */}
       <div
         className={cn(
-          "border-border bg-card-background relative h-full w-full max-w-sm border-l p-6 shadow-lg outline-none",
+          "border-border bg-card-background relative h-full w-full max-w-150 border-l p-6 shadow-lg outline-none",
           "animate-in slide-in-from-right-full",
           className,
         )}

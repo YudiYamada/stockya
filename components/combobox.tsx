@@ -11,7 +11,7 @@ type ComboboxContextProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
   selectedValue: string;
-  setSelectedValue: (value: string) => void;
+  setSelectedValue: (value: string, display?: string) => void;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
   registerItem: (id: string, visible: boolean) => void;
@@ -48,6 +48,13 @@ export function Combobox({
     new Set(),
   );
 
+  React.useEffect(() => {
+    setInternalValue(value);
+    if (!value) {
+      setDisplayValue("");
+    }
+  }, [value]);
+
   const registerItem = React.useCallback((id: string, isVisible: boolean) => {
     setVisibleItems((prev) => {
       const next = new Set(prev);
@@ -60,8 +67,11 @@ export function Combobox({
   }, []);
 
   const setSelectedValue = React.useCallback(
-    (val: string) => {
+    (val: string, display?: string) => {
       setInternalValue(val);
+      if (display !== undefined) {
+        setDisplayValue(display);
+      }
       onValueChange?.(val);
       setOpen(false);
       setSearchTerm("");
@@ -188,13 +198,8 @@ export function ComboboxItem({
   children: React.ReactNode;
   className?: string;
 }) {
-  const {
-    setSelectedValue,
-    selectedValue,
-    searchTerm,
-    registerItem,
-    setDisplayValue,
-  } = useCombobox();
+  const { setSelectedValue, selectedValue, searchTerm, registerItem } =
+    useCombobox();
 
   const label = typeof children === "string" ? children : value;
   const isVisible = label.toLowerCase().includes(searchTerm.toLowerCase());
@@ -203,19 +208,13 @@ export function ComboboxItem({
     registerItem(value, isVisible);
   }, [value, isVisible, registerItem]);
 
-  React.useEffect(() => {
-    if (selectedValue === value) {
-      setDisplayValue(label);
-    }
-  }, [selectedValue, value, label, setDisplayValue]);
-
   if (!isVisible) return null;
 
   const isSelected = selectedValue === value;
 
   return (
     <div
-      onClick={() => setSelectedValue(value)}
+      onClick={() => setSelectedValue(value, label)}
       className={cn(
         "hover:bg-primary/10 hover:text-primary relative flex cursor-pointer items-center rounded-sm px-2 py-1.5 text-sm outline-none select-none",
         isSelected && "bg-primary/5 text-primary font-medium",

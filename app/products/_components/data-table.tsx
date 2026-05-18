@@ -13,19 +13,19 @@ export interface PlainProduct {
   updatedAt: Date;
 }
 
-export interface Column {
+export interface Column<T> {
   header: string;
-  accessor: keyof PlainProduct | ((item: PlainProduct) => React.ReactNode);
+  accessor: keyof T | ((item: T) => React.ReactNode);
   className?: string;
 }
 
-interface DataTableProps {
-  columns: Column[];
-  data: PlainProduct[];
+interface DataTableProps<T> {
+  columns: Column<T>[];
+  data: T[];
   className?: string;
 }
 
-export function DataTable({ columns, data, className }: DataTableProps) {
+export function DataTable<T>({ columns, data, className }: DataTableProps<T>) {
   return (
     <div
       className={cn(

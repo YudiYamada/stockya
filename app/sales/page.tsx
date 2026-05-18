@@ -9,10 +9,18 @@ import UpsertSheetContent from "./_components/upsert-sheet-content";
 
 const Sales = async () => {
   const products = await getProducts();
-  const productOptions: ComboboxOption[] = products.map((product) => ({
-    label: product.name,
-    value: product.id,
+  const serializableProducts = products.map((product) => ({
+    id: product.id,
+    name: product.name,
+    price: Number(product.price),
   }));
+
+  const productOptions: ComboboxOption[] = serializableProducts.map(
+    (product) => ({
+      label: product.name,
+      value: product.id,
+    }),
+  );
 
   return (
     <main className="mt-8 w-full px-8">
@@ -28,7 +36,10 @@ const Sales = async () => {
               Adicionar Venda
             </Button>
           </SheetTrigger>
-          <UpsertSheetContent productOptions={productOptions} />
+          <UpsertSheetContent
+            products={serializableProducts}
+            productOptions={productOptions}
+          />
         </Sheet>
       </div>
     </main>

@@ -52,6 +52,7 @@ interface SerializableProduct {
   id: string;
   name: string;
   price: number;
+  stock: number;
 }
 
 interface UpsertSheetContentProps {
@@ -90,11 +91,21 @@ const UpsertSheetContent = ({
       (product) => product.id === data.productId,
     );
     if (!selectedProduct) return;
+
     setSelectedProducts((currencyProducts) => {
       const existingProduct = currencyProducts.find(
         (product) => product.id === selectedProduct.id,
       );
       if (existingProduct) {
+        const productIsOutOfStock =
+          existingProduct.quantity + data.quantity > selectedProduct.stock;
+        if (productIsOutOfStock) {
+          form.setError("quantity", {
+            message: `Quantidade de ${selectedProduct.name} excede o estoque disponível (${selectedProduct.stock}).`,
+          });
+          return currencyProducts;
+        }
+        form.reset();
         return currencyProducts.map((product) => {
           if (product.id === selectedProduct.id) {
             return {
@@ -105,6 +116,15 @@ const UpsertSheetContent = ({
           return product;
         });
       }
+
+      const addingExceedsStock = data.quantity > selectedProduct.stock;
+      if (addingExceedsStock) {
+        form.setError("quantity", {
+          message: `Quantidade de ${selectedProduct.name} excede o estoque disponível (${selectedProduct.stock}).`,
+        });
+        return currencyProducts;
+      }
+
       return [
         ...currencyProducts,
         {
@@ -114,6 +134,7 @@ const UpsertSheetContent = ({
         },
       ];
     });
+
     form.reset();
   };
 

@@ -13,6 +13,7 @@ const Sales = async () => {
     id: product.id,
     name: product.name,
     price: Number(product.price),
+    stock: product.stock,
   }));
 
   const productOptions: ComboboxOption[] = serializableProducts.map(

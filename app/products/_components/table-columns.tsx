@@ -10,7 +10,7 @@ const ProductActions = ({ product }: { product: PlainProduct }) => {
   return <TableDropdownMenu product={product} />;
 };
 
-export const productColumns: Column[] = [
+export const productColumns: Column<PlainProduct>[] = [
   {
     header: "Produto",
     accessor: "name",

@@ -10,7 +10,7 @@ import {
   DropdownTrigger,
 } from "@/components/drop-down-menu";
 
-import { PlainProduct } from "./data-table";
+import { PlainProduct } from "../../../components/data-table";
 import DeleteDialogContent from "./delete-dialog-content";
 import UpsertProductDialogContent from "./upsert-dialog";
 

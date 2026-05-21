@@ -1,9 +1,9 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/helpers/currency";
+import { cn } from "@/lib/utils";
 
-import { Column, PlainProduct } from "./data-table";
+import { Column, PlainProduct } from "../../../components/data-table";
 import TableDropdownMenu from "./table-dropdown-menu";
 
 const ProductActions = ({ product }: { product: PlainProduct }) => {

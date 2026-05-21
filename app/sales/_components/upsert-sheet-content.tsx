@@ -6,7 +6,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
-import { DataTable } from "@/app/products/_components/data-table";
 import { Button } from "@/components/button";
 import {
   Combobox,
@@ -17,6 +16,7 @@ import {
   ComboboxList,
   ComboboxSearch,
 } from "@/components/combobox";
+import { DataTable } from "@/components/data-table";
 import {
   Form,
   FormControl,
@@ -33,6 +33,8 @@ import {
   SheetTitle,
 } from "@/components/sheet";
 import { formatCurrency } from "@/helpers/currency";
+
+import { getProductColumns, SelectedProduct } from "./table-columns";
 
 export type ComboboxOption = {
   label: string;
@@ -55,13 +57,6 @@ interface SerializableProduct {
 interface UpsertSheetContentProps {
   products: SerializableProduct[];
   productOptions: ComboboxOption[];
-}
-
-interface SelectedProduct {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
 }
 
 const UpsertSheetContent = ({
@@ -89,32 +84,6 @@ const UpsertSheetContent = ({
       prev.filter((product) => product.id !== productId),
     );
   };
-
-  const columns = [
-    { header: "Produto", accessor: "name" as const },
-    {
-      header: "Preço Unitário",
-      accessor: (product: SelectedProduct) => formatCurrency(product.price),
-    },
-    { header: "Quantidade", accessor: "quantity" as const },
-    {
-      header: "Total",
-      accessor: (product: SelectedProduct) =>
-        formatCurrency(product.price * product.quantity),
-    },
-    {
-      header: "Ações",
-      accessor: (product: SelectedProduct) => (
-        <Button
-          type="button"
-          variant="destructive"
-          onClick={() => onDelete(product.id)}
-        >
-          Remover
-        </Button>
-      ),
-    },
-  ];
 
   const onSubmit = (data: FormSchema) => {
     const selectedProduct = products.find(
@@ -213,7 +182,11 @@ const UpsertSheetContent = ({
         </form>
       </Form>
 
-      <DataTable columns={columns} data={selectedProducts} className="mt-6" />
+      <DataTable
+        columns={getProductColumns(onDelete)}
+        data={selectedProducts}
+        className="mt-6"
+      />
       <div className="mt-4 text-right text-sm font-semibold">
         Total: {formatCurrency(productsTotal)}
       </div>

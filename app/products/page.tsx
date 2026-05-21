@@ -1,7 +1,7 @@
 import { cachedGetProducts } from "@/data-access/product/get-products";
 
 import CreateProductButton from "./_components/create-product-button";
-import { DataTable } from "./_components/data-table";
+import { DataTable } from "../../components/data-table";
 import { productColumns } from "./_components/table-columns";
 
 const Products = async () => {

@@ -25,12 +25,42 @@ function useSheet() {
 
 interface SheetProps {
   children: React.ReactNode;
+  open?: boolean;
+  onOpenChange?:
+    | React.Dispatch<React.SetStateAction<boolean>>
+    | ((open: boolean) => void);
 }
 
-export function Sheet({ children }: SheetProps) {
+export function Sheet({
+  children,
+  open: controlledOpen,
+  onOpenChange,
+}: SheetProps) {
   const [open, setOpen] = React.useState(false);
+  const isControlled = controlledOpen !== undefined;
+  const actualOpen = isControlled ? controlledOpen : open;
+
+  const handleOpenChange: React.Dispatch<React.SetStateAction<boolean>> =
+    React.useCallback(
+      (nextOpen) => {
+        const resolvedOpen =
+          typeof nextOpen === "function" ? nextOpen(actualOpen) : nextOpen;
+
+        if (onOpenChange) {
+          onOpenChange(resolvedOpen as boolean);
+        }
+
+        if (!isControlled) {
+          setOpen(nextOpen);
+        }
+      },
+      [actualOpen, isControlled, onOpenChange],
+    );
+
   return (
-    <SheetContext.Provider value={{ open, setOpen }}>
+    <SheetContext.Provider
+      value={{ open: actualOpen, setOpen: handleOpenChange }}
+    >
       {children}
     </SheetContext.Provider>
   );

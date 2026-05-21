@@ -1,11 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "lucide-react";
+import { CheckIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
+import { createSale } from "@/actions/sale/create-sale";
 import { Button } from "@/components/button";
 import {
   Combobox,
@@ -29,10 +30,12 @@ import { Input } from "@/components/input";
 import {
   SheetContent,
   SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "@/components/sheet";
 import { formatCurrency } from "@/helpers/currency";
+import { toast } from "@/lib/toast-store";
 
 import { getProductColumns, SelectedProduct } from "./table-columns";
 
@@ -58,11 +61,13 @@ interface SerializableProduct {
 interface UpsertSheetContentProps {
   products: SerializableProduct[];
   productOptions: ComboboxOption[];
+  onSubmitSuccess?: () => void;
 }
 
 const UpsertSheetContent = ({
   products,
   productOptions,
+  onSubmitSuccess,
 }: UpsertSheetContentProps) => {
   const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>(
     [],
@@ -138,6 +143,21 @@ const UpsertSheetContent = ({
     form.reset();
   };
 
+  const onSubmitSale = async () => {
+    try {
+      await createSale({
+        products: selectedProducts.map((product) => ({
+          id: product.id,
+          quantity: product.quantity,
+        })),
+      });
+      toast.success("Venda criada com sucesso!");
+      onSubmitSuccess?.();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Ocorreu um erro ao criar a venda.");
+    }
+  };
+
   return (
     <SheetContent className="rounded-l-3xl">
       <SheetHeader>
@@ -211,6 +231,17 @@ const UpsertSheetContent = ({
       <div className="mt-4 text-right text-sm font-semibold">
         Total: {formatCurrency(productsTotal)}
       </div>
+
+      <SheetFooter className="pt-6">
+        <Button
+          className="w-full gap-2"
+          disabled={selectedProducts.length === 0}
+          onClick={onSubmitSale}
+        >
+          <CheckIcon size={20} />
+          Finalizar Venda
+        </Button>
+      </SheetFooter>
     </SheetContent>
   );
 };

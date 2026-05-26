@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
-import { createSale } from "@/actions/sale/create-sale";
+import { upsertSale } from "@/actions/sale/upsert-sale";
 import { Button } from "@/components/button";
 import {
   Combobox,
@@ -74,7 +74,7 @@ const UpsertSheetContent = ({
   const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>(
     [],
   );
-  const { execute: executeCreateSale } = useAction(createSale, {
+  const { execute: executeCreateSale } = useAction(upsertSale, {
     onError: ({ error: { validationErrors } }) => {
       const flattenedErrors = flattenValidationErrors(validationErrors);
       toast.error(flattenedErrors.formErrors[0]);

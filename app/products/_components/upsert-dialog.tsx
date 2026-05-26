@@ -2,6 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
+import { flattenValidationErrors } from "next-safe-action";
+import { useAction } from "next-safe-action/hooks";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
@@ -50,24 +52,31 @@ const UpsertProductDialogContent = ({
   });
 
   const isEditing = !!defaultValues;
-
-  const onSubmit = async (data: UpsertProductSchema) => {
-    try {
-      await upsertProduct({ ...data, id: defaultValues?.id });
+  const { execute: executeUpsert } = useAction(upsertProduct, {
+    onError: ({ error: { validationErrors } }) => {
+      const flat = flattenValidationErrors(validationErrors);
+      if (flat.formErrors?.length) {
+        toast.error(flat.formErrors[0]);
+      }
+      Object.entries(flat.fieldErrors ?? {}).forEach(([key, arr]) => {
+        const msg = Array.isArray(arr) ? arr[0] : undefined;
+        if (msg) {
+          form.setError(key as keyof UpsertProductSchema, { message: msg });
+        }
+      });
+    },
+    onSuccess: () => {
       if (isEditing) {
         toast.success("Produto atualizado com sucesso.");
       } else {
         toast.success("Produto adicionado com sucesso.");
       }
       onSuccess?.();
-    } catch (error) {
-      console.error("Erro ao salvar produto:", error);
-      if (isEditing) {
-        toast.error("Erro ao atualizar produto. Tente novamente.");
-      } else {
-        toast.error("Erro ao adicionar produto. Tente novamente.");
-      }
-    }
+    },
+  });
+
+  const onSubmit = (data: UpsertProductSchema) => {
+    executeUpsert({ ...data, id: defaultValues?.id });
   };
 
   return (

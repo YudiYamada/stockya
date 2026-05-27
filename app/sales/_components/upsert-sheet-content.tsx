@@ -39,7 +39,7 @@ import {
 import { formatCurrency } from "@/helpers/currency";
 import { toast } from "@/lib/toast-store";
 
-import { getProductColumns, SelectedProduct } from "./table-columns";
+import SalesTableDropdownMenu from "./table-dropdown-menu";
 
 export type ComboboxOption = {
   label: string;
@@ -65,6 +65,36 @@ interface UpsertSheetContentProps {
   productOptions: ComboboxOption[];
   onSubmitSuccess?: () => void;
 }
+
+interface SelectedProduct {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
+const getProductColumns = (onDelete: (productId: string) => void) => [
+  { header: "Produto", accessor: "name" as const },
+  {
+    header: "Preço Unitário",
+    accessor: (product: SelectedProduct) => formatCurrency(product.price),
+  },
+  { header: "Quantidade", accessor: "quantity" as const },
+  {
+    header: "Total",
+    accessor: (product: SelectedProduct) =>
+      formatCurrency(product.price * product.quantity),
+  },
+  {
+    header: "Ações",
+    accessor: (product: SelectedProduct) => (
+      <SalesTableDropdownMenu
+        product={{ id: product.id }}
+        onDelete={onDelete}
+      />
+    ),
+  },
+];
 
 const UpsertSheetContent = ({
   products,

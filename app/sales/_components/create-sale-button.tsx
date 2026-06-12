@@ -1,44 +1,35 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Button } from "@/app/_components/ui/button";
+import { Sheet, SheetTrigger } from "@/app/_components/ui/sheet";
+import UpsertSheetContent from "./upsert-sheet-content";
+import { ComboboxOption } from "@/app/_components/ui/combobox";
 import { useState } from "react";
+import { PlusIcon } from "lucide-react";
+import { ProductDto } from "@/app/_data-access/product/get-products";
 
-import { Button } from "@/components/button";
-import { Sheet, SheetTrigger } from "@/components/sheet";
-
-import UpsertSheetContent, { ComboboxOption } from "./upsert-sheet-content";
-
-interface CreateSaleButtonProps {
-  products: {
-    id: string;
-    name: string;
-    price: number;
-    stock: number;
-  }[];
+interface UpsertSaleButtonProps {
+  products: ProductDto[];
+  productOptions: ComboboxOption[];
 }
 
-const CreateSaleButton = ({ products }: CreateSaleButtonProps) => {
+const UpsertSaleButton = (props: UpsertSaleButtonProps) => {
   const [sheetIsOpen, setSheetIsOpen] = useState(false);
-  const productOptions: ComboboxOption[] = products.map((product) => ({
-    label: product.name,
-    value: product.id,
-  }));
-
   return (
     <Sheet open={sheetIsOpen} onOpenChange={setSheetIsOpen}>
       <SheetTrigger asChild>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Adicionar Venda
+        <Button className="gap-2">
+          <PlusIcon size={20} />
+          Nova Venda
         </Button>
       </SheetTrigger>
       <UpsertSheetContent
-        onSubmitSuccess={() => setSheetIsOpen(false)}
-        products={products}
-        productOptions={productOptions}
+        isOpen={sheetIsOpen}
+        setSheetIsOpen={setSheetIsOpen}
+        {...props}
       />
     </Sheet>
   );
 };
 
-export default CreateSaleButton;
+export default UpsertSaleButton;

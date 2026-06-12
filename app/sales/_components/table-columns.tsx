@@ -1,32 +1,49 @@
-import { formatCurrency } from "@/helpers/currency";
+"use client";
 
+import { SaleDto } from "@/app/_data-access/sale/get-sales";
+import { formatCurrency } from "@/app/_helpers/currency";
+import { ColumnDef } from "@tanstack/react-table";
 import SalesTableDropdownMenu from "./table-dropdown-menu";
+import { ProductDto } from "@/app/_data-access/product/get-products";
+import { ComboboxOption } from "@/app/_components/ui/combobox";
 
-export interface SelectedProduct {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
+interface SaleTableColumn extends SaleDto {
+  products: ProductDto[];
+  productOptions: ComboboxOption[];
 }
 
-export const getProductColumns = (onDelete: (productId: string) => void) => [
-  { header: "Produto", accessor: "name" as const },
+export const saleTableColumns: ColumnDef<SaleTableColumn>[] = [
   {
-    header: "Preço Unitário",
-    accessor: (product: SelectedProduct) => formatCurrency(product.price),
+    accessorKey: "productNames",
+    header: "Produtos",
   },
-  { header: "Quantidade", accessor: "quantity" as const },
   {
-    header: "Total",
-    accessor: (product: SelectedProduct) =>
-      formatCurrency(product.price * product.quantity),
+    accessorKey: "totalProducts",
+    header: "Quantidade de Produtos",
+  },
+  {
+    header: "Valor Total",
+    cell: ({
+      row: {
+        original: { totalAmount },
+      },
+    }) => formatCurrency(totalAmount),
+  },
+  {
+    header: "Data",
+    cell: ({
+      row: {
+        original: { date },
+      },
+    }) => new Date(date).toLocaleDateString("pt-BR"),
   },
   {
     header: "Ações",
-    accessor: (product: SelectedProduct) => (
+    cell: ({ row: { original: sale } }) => (
       <SalesTableDropdownMenu
-        product={{ id: product.id }}
-        onDelete={onDelete}
+        sale={sale}
+        products={sale.products}
+        productOptions={sale.productOptions}
       />
     ),
   },

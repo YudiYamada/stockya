@@ -1,15 +1,14 @@
-import { ClipboardCopyIcon, MoreHorizontalIcon, TrashIcon } from "lucide-react";
-
-import { Product } from "@/app/generated/prisma/client";
-import { Button } from "@/components/button";
+import { Button } from "@/app/_components/ui/button";
 import {
-  Dropdown,
-  DropdownContent,
-  DropdownItem,
-  DropdownLabel,
-  DropdownSeparator,
-  DropdownTrigger,
-} from "@/components/drop-down-menu";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/app/_components/ui/dropdown-menu";
+import { Product } from "@prisma/client";
+import { MoreHorizontalIcon, ClipboardCopyIcon, TrashIcon } from "lucide-react";
 
 interface UpsertSaleTableDropdownMenuProps {
   product: Pick<Product, "id">;
@@ -21,29 +20,32 @@ const UpsertSaleTableDropdownMenu = ({
   onDelete,
 }: UpsertSaleTableDropdownMenuProps) => {
   return (
-    <Dropdown>
-      <DropdownTrigger>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Button variant="ghost">
           <MoreHorizontalIcon size={16} />
         </Button>
-      </DropdownTrigger>
-      <DropdownContent>
-        <DropdownLabel>Ações</DropdownLabel>
-        <DropdownSeparator />
-        <DropdownItem
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>Ações</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
           className="gap-1.5"
           onClick={() => navigator.clipboard.writeText(product.id)}
         >
           <ClipboardCopyIcon size={16} />
           Copiar ID
-        </DropdownItem>
+        </DropdownMenuItem>
 
-        <DropdownItem className="gap-1.5" onClick={() => onDelete(product.id)}>
+        <DropdownMenuItem
+          className="gap-1.5"
+          onClick={() => onDelete(product.id)}
+        >
           <TrashIcon size={16} />
-          Excluir
-        </DropdownItem>
-      </DropdownContent>
-    </Dropdown>
+          Deletar
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 

@@ -1,54 +1,69 @@
-import { ClipboardCopy, Ellipsis, SquarePen, Trash2 } from "lucide-react";
-import { useState } from "react";
-
-import { AlertDialog, AlertDialogTrigger } from "@/components/alert-dialog";
-import { Dialog } from "@/components/dialog";
 import {
-  Dropdown,
-  DropdownContent,
-  DropdownItem,
-  DropdownTrigger,
-} from "@/components/drop-down-menu";
+  AlertDialog,
+  AlertDialogTrigger,
+} from "@/app/_components/ui/alert-dialog";
+import { Button } from "@/app/_components/ui/button";
+import { Dialog, DialogTrigger } from "@/app/_components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/app/_components/ui/dropdown-menu";
+import {
+  MoreHorizontalIcon,
+  ClipboardCopyIcon,
+  EditIcon,
+  TrashIcon,
+} from "lucide-react";
+import { useState } from "react";
+import DeleteProductDialogContent from "./delete-dialog-content";
+import UpsertProductDialogContent from "./upsert-dialog-content";
+import { ProductDto } from "@/app/_data-access/product/get-products";
 
-import { PlainProduct } from "../../../components/data-table";
-import DeleteDialogContent from "./delete-dialog-content";
-import UpsertProductDialogContent from "./upsert-dialog";
-
-interface TableDropdownMenuProps {
-  product: PlainProduct;
+interface ProductTableDropdownMenuProps {
+  product: ProductDto;
 }
 
-const TableDropdownMenu = ({ product }: TableDropdownMenuProps) => {
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-
+const ProductTableDropdownMenu = ({
+  product,
+}: ProductTableDropdownMenuProps) => {
+  const [editDialogOpen, setEditDialogIsOpen] = useState(false);
   return (
     <AlertDialog>
-      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <Dropdown>
-          <DropdownTrigger>
-            <div className="hover:bg-foreground/5 cursor-pointer rounded-full p-2 transition-colors">
-              <Ellipsis size={20} />
-            </div>
-          </DropdownTrigger>
-
-          <DropdownContent>
-            <DropdownItem
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogIsOpen}>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost">
+              <MoreHorizontalIcon size={16} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Ações</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="gap-1.5"
               onClick={() => navigator.clipboard.writeText(product.id)}
             >
-              <ClipboardCopy size={18} /> Copiar ID
-            </DropdownItem>
-
-            <DropdownItem onClick={() => setEditDialogOpen(true)}>
-              <SquarePen size={18} /> Editar
-            </DropdownItem>
-
-            <AlertDialogTrigger className="w-full">
-              <DropdownItem>
-                <Trash2 size={18} /> Excluir
-              </DropdownItem>
+              <ClipboardCopyIcon size={16} />
+              Copiar ID
+            </DropdownMenuItem>
+            <DialogTrigger asChild>
+              <DropdownMenuItem className="gap-1.5">
+                <EditIcon size={16} />
+                Editar
+              </DropdownMenuItem>
+            </DialogTrigger>
+            <AlertDialogTrigger asChild>
+              <DropdownMenuItem className="gap-1.5">
+                <TrashIcon size={16} />
+                Deletar
+              </DropdownMenuItem>
             </AlertDialogTrigger>
-          </DropdownContent>
-        </Dropdown>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <UpsertProductDialogContent
           defaultValues={{
             id: product.id,
@@ -56,12 +71,12 @@ const TableDropdownMenu = ({ product }: TableDropdownMenuProps) => {
             price: Number(product.price),
             stock: product.stock,
           }}
-          onSuccess={() => setEditDialogOpen(false)}
+          setDialogIsOpen={setEditDialogIsOpen}
         />
+        <DeleteProductDialogContent productId={product.id} />
       </Dialog>
-      <DeleteDialogContent productId={product.id} />
     </AlertDialog>
   );
 };
 
-export default TableDropdownMenu;
+export default ProductTableDropdownMenu;

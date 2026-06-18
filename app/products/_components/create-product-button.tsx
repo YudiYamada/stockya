@@ -1,25 +1,24 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Button } from "@/app/_components/ui/button";
+import { Dialog, DialogTrigger } from "@/app/_components/ui/dialog";
+import { PlusIcon } from "lucide-react";
+
 import { useState } from "react";
-
-import { Button } from "@/components/button";
-import { Dialog, DialogTrigger } from "@/components/dialog";
-
-import UpsertProductDialogContent from "./upsert-dialog";
+import UpsertProductDialogContent from "./upsert-dialog-content";
 
 const CreateProductButton = () => {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogIsOpen, setDialogIsOpen] = useState(false);
 
   return (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+    <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Adicionar Produto
+        <Button className="gap-2">
+          <PlusIcon size={20} />
+          Novo produto
         </Button>
       </DialogTrigger>
-      <UpsertProductDialogContent onSuccess={() => setDialogOpen(false)} />
+      <UpsertProductDialogContent setDialogIsOpen={setDialogIsOpen} />
     </Dialog>
   );
 };

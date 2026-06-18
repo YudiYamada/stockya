@@ -1,6 +1,4 @@
-import { deleteProduct } from "@/actions/product/delete-product";
-import { flattenValidationErrors } from "next-safe-action";
-import { useAction } from "next-safe-action/hooks";
+import { deleteProduct } from "@/app/_actions/product/delete-product";
 import {
   AlertDialogAction,
   AlertDialogCancel,
@@ -9,58 +7,43 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/alert-dialog";
-import { toast } from "@/lib/toast-store";
+} from "@/app/_components/ui/alert-dialog";
+import { useAction } from "next-safe-action/hooks";
+import { toast } from "sonner";
 
 interface DeleteProductDialogContentProps {
   productId: string;
 }
 
-const DeleteDialogContent = ({
+const DeleteProductDialogContent = ({
   productId,
 }: DeleteProductDialogContentProps) => {
   const { execute: executeDeleteProduct } = useAction(deleteProduct, {
-    onError: ({ error: { validationErrors } }) => {
-      const flat = flattenValidationErrors(validationErrors);
-      if (flat.formErrors?.length) {
-        toast.error(flat.formErrors[0]);
-      } else {
-        toast.error(
-          "Erro ao deletar",
-          "Ocorreu um erro ao tentar deletar o produto.",
-        );
-      }
-    },
     onSuccess: () => {
-      toast.success("Produto deletado", "O produto foi removido com sucesso.");
+      toast.success("Produto excluído com sucesso.");
+    },
+    onError: () => {
+      toast.error("Ocorreu um erro ao excluir o produto.");
     },
   });
-
-  const handleContinueClick = async () => {
-    try {
-      await executeDeleteProduct({ id: productId });
-    } catch (error) {
-      console.error("Error ao deletar produto:", error);
-    }
-  };
-
+  const handleContinueClick = () => executeDeleteProduct({ id: productId });
   return (
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>Confirmar exclusão?</AlertDialogTitle>
+        <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
         <AlertDialogDescription>
-          Essa ação removerá o item permanentemente do sistema.
+          Você está prestes a excluir este produto. Esta ação não pode ser
+          desfeita. Deseja continuar?
         </AlertDialogDescription>
       </AlertDialogHeader>
-
       <AlertDialogFooter>
-        <AlertDialogCancel>Voltar</AlertDialogCancel>
-        <AlertDialogAction variant="destructive" onClick={handleContinueClick}>
-          Confirmar
+        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+        <AlertDialogAction onClick={handleContinueClick}>
+          Continuar
         </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   );
 };
 
-export default DeleteDialogContent;
+export default DeleteProductDialogContent;

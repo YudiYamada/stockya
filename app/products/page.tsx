@@ -1,35 +1,33 @@
-import { cachedGetProducts } from "@/data-access/product/get-products";
+import { DataTable } from "../_components/ui/data-table";
+import { productTableColumns } from "./_components/table-columns";
+import { getProducts } from "../_data-access/product/get-products";
+import AddProductButton from "./_components/create-product-button";
+import Header, {
+  HeaderLeft,
+  HeaderRight,
+  HeaderSubtitle,
+  HeaderTitle,
+} from "../_components/header";
 
-import CreateProductButton from "./_components/create-product-button";
-import { DataTable } from "../../components/data-table";
-import { productColumns } from "./_components/table-columns";
+// Essa página será montada uma vez e reutilizada (SSG), podendo ser incrementada de forma regenerativa (ISR)
+export const dynamic = "force-static";
 
-const Products = async () => {
-  const products = await cachedGetProducts();
-  const plainProducts = products.map((p) => ({
-    id: p.id,
-    name: p.name,
-    price: Number(p.price),
-    stock: p.stock,
-    createdAt: p.createdAt,
-    updatedAt: p.updatedAt,
-  }));
+const ProductsPage = async () => {
+  const products = await getProducts();
   return (
-    <main className="mt-8 w-full px-8">
-      <span className="text-primary text-2xl text-[15px] font-semibold">
-        Produtos
-      </span>
-      <div className="flex min-w-full justify-between">
-        <h2 className="text-xl font-semibold">Gestão de Produtos</h2>
-        <CreateProductButton />
-      </div>
-      <DataTable
-        data={plainProducts}
-        columns={productColumns}
-        className="mt-5 mb-5"
-      />
-    </main>
+    <div className="m-8 w-full space-y-8 overflow-auto rounded-lg bg-white p-8">
+      <Header>
+        <HeaderLeft>
+          <HeaderSubtitle>Gestão de Produtos</HeaderSubtitle>
+          <HeaderTitle>Produtos</HeaderTitle>
+        </HeaderLeft>
+        <HeaderRight>
+          <AddProductButton />
+        </HeaderRight>
+      </Header>
+      <DataTable columns={productTableColumns} data={products} />
+    </div>
   );
 };
 
-export default Products;
+export default ProductsPage;
